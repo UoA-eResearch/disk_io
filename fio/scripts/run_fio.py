@@ -37,6 +37,8 @@ def run_fio():
 
   if proc.returncode != 0:
     print(proc.stderr)
+    sys.exit(1)
+
   return proc.returncode
 
 
