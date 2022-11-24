@@ -5,6 +5,7 @@ direct=0
 zero_buffers=1
 runtime=1m
 time_based=1
+thread
 
 [job1]
 wait_for_previous
