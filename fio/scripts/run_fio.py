@@ -1,14 +1,24 @@
 import os
+import sys
 import json
 import subprocess
+import platform
 from datetime import datetime
 
-basedir = '/tmp'
-fio_testfile = f'{basedir}/fio_raw_data'
-fio_output_file = f'{basedir}/out.json'
-fio_job_file = 'linux.fio'
+pltfrm = platform.system().lower()
+
+if pltfrm == 'windows':
+  basedir = 'c:/windows/temp'
+elif pltfrm == 'linux' or pltfrm == 'darwin':
+  basedir = '/tmp'
+else:
+  print(f'Unsupported platform: {pltfrm}')
+  sys.exit(1)
+ 
+fio_testfile = os.path.join(basedir, 'fio_raw_data')
+fio_output_file = os.path.join(basedir, 'out.json')
+fio_job_file = os.path.join('jobs', f'{pltfrm}.fio')
 facility = 'nectar'
-_os = 'linux'
 
 def delete_fio_files():
   if os.path.exists(fio_testfile):
@@ -49,7 +59,7 @@ def print_fio_results():
     del job['job options']['bs']
     del job['job options']['iodepth']
     job_options = {**global_options, **job['job options']}
-    print(f'{date_time} | {facility} | {_os} | {job_type} | {ioengine} | {bs} | {iodepth} | {job_options}')
+    print(f'{date_time} | {facility} | {pltfrm} | {job_type} | {ioengine} | {bs} | {iodepth} | {job_options}')
     for x in ['read', 'write']:
       if job[x]['io_bytes'] > 0:
         iops = job[x]['iops'] 
