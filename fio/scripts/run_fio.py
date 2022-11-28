@@ -6,6 +6,7 @@ import platform
 import tempfile
 import configparser
 import pymysql.cursors
+from datetime import datetime
 
 pltfrm = platform.system().lower()
 if pltfrm != 'windows' and pltfrm != 'linux' and pltfrm != 'darwin':
@@ -60,11 +61,14 @@ def store_fio_results():
     with db_conn.cursor() as cursor:
         for job in data['jobs']:
             job_options = {**global_options, **job['job options']}
-            sql = "INSERT INTO `fio_benchmarks` (`timestamp`, `facility`, 'platform', " \
-                  "'config', 'bw_read_kbs', 'iops_read', 'bw_write_kbs', 'iops_write') " \
+            del (job_options['filename'])
+            sql = "INSERT INTO `fio_benchmarks` (`ts`, `facility`, `platform`, `config`, " \
+                  "`bytes_ps_read`, `iops_read`, `bytes_ps_write`, `iops_write`) " \
                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(sql, (timestamp, facility, pltfrm, job_options, job['read']['bw'],
-                                 job['read']['iops'], job['write']['bw'], job['write']['iops']))
+            cursor.execute(sql, (datetime.fromtimestamp(timestamp), facility, pltfrm, str(job_options),
+                                 job['read']['bw'], job['read']['iops'], job['write']['bw'],
+                                 job['write']['iops']))
+        db_conn.commit()
 
 
 delete_fio_files()
