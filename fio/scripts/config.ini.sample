@@ -1,0 +1,9 @@
+[main]
+facility = nectar_ceph
+
+[mysql]
+host = 
+port = 
+user = 
+password = 
+database = 
