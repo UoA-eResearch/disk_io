@@ -66,7 +66,7 @@ def store_fio_results():
                   "`bytes_ps_read`, `iops_read`, `bytes_ps_write`, `iops_write`) " \
                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(sql, (datetime.fromtimestamp(timestamp), facility, pltfrm, str(job_options),
-                                 job['read']['bw'], job['read']['iops'], job['write']['bw'],
+                                 job['read']['bw_bytes'], job['read']['iops'], job['write']['bw_bytes'],
                                  job['write']['iops']))
         db_conn.commit()
 
